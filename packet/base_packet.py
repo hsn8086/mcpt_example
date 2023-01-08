@@ -33,7 +33,7 @@ class BasePacket:
                 add_data = bytes([0])
         elif d_type == Byte:
             add_data = value[:1]
-        elif d_type == int or d_type == VarInt:
+        elif d_type == int:
             add_data = int.to_bytes(value, 4, 'big', signed=True)
         elif d_type == str:
             add_data = bytes(VarInt(len(bytes(value, 'utf-8')))) + bytes(value, 'utf-8')
@@ -45,7 +45,10 @@ class BasePacket:
             add_data = bytes(VarInt(len(value)))
             for i in value:
                 add_data += self._add(i, type(i))
-
+        elif d_type == VarInt:
+            add_data=bytes(value)
+        elif d_type==UnsignedShort:
+            add_data = int.to_bytes(int(value), 2, 'big', signed=False)
         else:
             add_data = bytes(value)
         return add_data
